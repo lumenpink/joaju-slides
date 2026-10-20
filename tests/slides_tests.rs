@@ -1,6 +1,6 @@
 use joaju_slides::{
     parse_markdown_deck, render_handout_typst, render_notes_typst, render_slides_typst,
-    validate_deck, PresentationMode, SlideAspectRatio, SlideDeck, SlidesError,
+    SlideAspectRatio, SlidesError,
 };
 use std::path::PathBuf;
 
@@ -131,7 +131,7 @@ Notas 2 duplicadas
     let res = parse_markdown_deck(duplicate_notes_md);
     assert!(res.is_err());
     match res.unwrap_err() {
-        SlidesError::DuplicateNotesDelimiter { line } => assert_eq!(line, 7),
+        SlidesError::DuplicateNotesDelimiter { line } => assert_eq!(line, 8),
         other => panic!("Expected DuplicateNotesDelimiter, got: {:?}", other),
     }
 }
