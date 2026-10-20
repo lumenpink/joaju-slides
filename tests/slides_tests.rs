@@ -1,6 +1,6 @@
 use joaju_slides::{
     parse_markdown_deck, render_handout_typst, render_notes_typst, render_slides_typst,
-    SlideAspectRatio, SlidesError,
+    validate_deck, SlideAspectRatio, SlideWarning, SlidesError,
 };
 use std::path::PathBuf;
 
@@ -40,13 +40,21 @@ fn test_parse_frontmatter_and_slides() {
     let s1 = &deck.slides[0];
     assert_eq!(s1.slide_index, 1);
     assert!(s1.visual_content.contains("Fechamento Mitral"));
-    assert!(s1.speaker_notes.as_ref().unwrap().contains("Mecanismo Fisiológico"));
+    assert!(s1
+        .speaker_notes
+        .as_ref()
+        .unwrap()
+        .contains("Mecanismo Fisiológico"));
 
     let s2 = &deck.slides[1];
     assert_eq!(s2.slide_index, 2);
     assert_eq!(s2.title_hint.as_deref(), Some("B3 (Terceira Bulha)"));
     assert!(s2.visual_content.contains("Sobrecarga de volume"));
-    assert!(s2.speaker_notes.as_ref().unwrap().contains("A terceira bulha ocorre"));
+    assert!(s2
+        .speaker_notes
+        .as_ref()
+        .unwrap()
+        .contains("A terceira bulha ocorre"));
 }
 
 #[test]
@@ -134,4 +142,67 @@ Notas 2 duplicadas
         SlidesError::DuplicateNotesDelimiter { line } => assert_eq!(line, 8),
         other => panic!("Expected DuplicateNotesDelimiter, got: {:?}", other),
     }
+}
+
+#[test]
+fn test_empty_deck_returns_error() {
+    let res = parse_markdown_deck("");
+    assert_eq!(res.unwrap_err(), SlidesError::EmptyDeck);
+}
+
+#[test]
+fn test_slide_without_notes_and_custom_bib_style() {
+    let md = r#"---
+title: Simples
+bibliography: "refs.bib"
+bib_style: "apa"
+---
+
+# Slide Unico
+Sem notas explicativas
+"#;
+    let deck = parse_markdown_deck(md).unwrap();
+    assert_eq!(deck.slides.len(), 1);
+    assert_eq!(deck.slides[0].speaker_notes, None);
+    assert_eq!(deck.bib_style, "apa");
+
+    let slides_typst = render_slides_typst(&deck).unwrap();
+    assert!(slides_typst.contains("#bibliography(\"refs.bib\", style: \"apa\")"));
+
+    let handout_typst = render_handout_typst(&deck).unwrap();
+    assert!(handout_typst.contains("Sem notas explicativas"));
+
+    let notes_typst = render_notes_typst(&deck).unwrap();
+    assert!(notes_typst.contains("= Slide Unico"));
+}
+
+#[test]
+fn test_validator_warnings_overflow() {
+    let overflow_visual = "Linha de texto longo\n".repeat(20);
+    let overflow_notes = "Nota detalhada com texto longo que excede limite. ".repeat(40);
+
+    let md = format!(
+        r#"---
+title: Overflow Test
+---
+
+{}
+???
+{}
+"#,
+        overflow_visual, overflow_notes
+    );
+
+    let deck = parse_markdown_deck(&md).unwrap();
+    let warnings = validate_deck(&deck);
+
+    let has_slide_overflow = warnings
+        .iter()
+        .any(|w| matches!(w, SlideWarning::WarnSlideOverflow { .. }));
+    let has_handout_overflow = warnings
+        .iter()
+        .any(|w| matches!(w, SlideWarning::WarnHandoutOverflow { .. }));
+
+    assert!(has_slide_overflow);
+    assert!(has_handout_overflow);
 }
