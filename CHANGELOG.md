@@ -8,4 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Presentation slides, handouts, and speaker notes generator from Markdown via Typst (closes #1).
+- Delimiter support for slides (`---`) and speaker notes (`???`).
+- Triple output modes: `--slides` (16:9/4:3), `--handout` (A4 with thumbnails), and `--notes` (continuous A4).
+- Automatic bibliography integration via Typst `#bibliography()`.
+- Overflow validation and error diagnostics (`ERR_ORPHAN_NOTES_DELIMITER`, `ERR_DUPLICATE_NOTES_DELIMITER`, `WARN_SLIDE_OVERFLOW`, `WARN_HANDOUT_OVERFLOW`).
 - Inicialização do repositório em conformidade com o padrão GOST.

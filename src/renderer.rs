@@ -64,10 +64,7 @@ pub fn render_handout_typst(deck: &SlideDeck) -> Result<String, SlidesError> {
         }
 
         let default_title = format!("Lâmina {}", slide.slide_index);
-        let title = slide
-            .title_hint
-            .as_deref()
-            .unwrap_or(&default_title);
+        let title = slide.title_hint.as_deref().unwrap_or(&default_title);
         let visual = sanitize_markdown_to_typst(&slide.visual_content);
 
         out.push_str(&format!(
@@ -139,10 +136,7 @@ pub fn render_notes_typst(deck: &SlideDeck) -> Result<String, SlidesError> {
 
     for slide in &deck.slides {
         let default_title = format!("Lâmina {}", slide.slide_index);
-        let title = slide
-            .title_hint
-            .as_deref()
-            .unwrap_or(&default_title);
+        let title = slide.title_hint.as_deref().unwrap_or(&default_title);
 
         out.push_str(&format!("= {title}\n\n"));
 
@@ -170,7 +164,10 @@ fn sanitize_markdown_to_typst(input: &str) -> String {
     for line in input.lines() {
         let trimmed = line.trim();
         // Handle images ![[image.ext]] -> #image("image.ext", height: 70%, fit: "contain")
-        if let Some(stripped) = trimmed.strip_prefix("![[").and_then(|s| s.strip_suffix("]]")) {
+        if let Some(stripped) = trimmed
+            .strip_prefix("![[")
+            .and_then(|s| s.strip_suffix("]]"))
+        {
             lines.push(format!(
                 r#"#image("{}", height: 70%, fit: "contain")"#,
                 stripped
