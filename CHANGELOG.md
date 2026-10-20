@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- (renderer) ensure typst 0.15 syntax compatibility for handout and notes (closes #2).
+
 ### Added
 - Presentation slides, handouts, and speaker notes generator from Markdown via Typst (closes #1).
 - Delimiter support for slides (`---`) and speaker notes (`???`).
