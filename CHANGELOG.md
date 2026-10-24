@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Remoção de campo `permissions:` incompatível com Forgejo Actions (closes #5).
+
 ### Fixed
 - (renderer) ensure typst 0.15 syntax compatibility for handout and notes (closes #2).
 
