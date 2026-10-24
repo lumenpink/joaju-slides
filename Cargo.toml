@@ -1,11 +1,11 @@
 [package]
 name = "joaju-slides"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Presentation slides, handouts, and speaker notes generator from Markdown via Typst"
 license = "Apache-2.0"
-repository = "https://codeberg.org/lumenpink/joaju-slides"
-homepage = "https://codeberg.org/lumenpink/joaju-slides"
+repository = "https://gambi.2lp.in/lumen/joaju-slides"
+homepage = "https://gambi.2lp.in/lumen/joaju-slides"
 documentation = "https://docs.rs/joaju-slides"
 readme = "README.md"
 keywords = ["typst", "slides", "presentation", "handout", "markdown"]
